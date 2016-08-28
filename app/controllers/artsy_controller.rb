@@ -42,24 +42,25 @@ class ArtsyController < ApplicationController
       # render json: "#{andy_warhol.name} was born in #{andy_warhol.birthday} in #{andy_warhol.hometown}"
 
       user_search = api.artist(id: data_received)
-      puts "#{user_search.name}"
-      puts "#{user_search.artworks}"
-      puts "artist id, #{user_search.id}"
+      artist_name = user_search.name
+      artist_works = user_search.artworks
       search_id = user_search.id
-      puts "artworks id, #{search_id}"
       artwork_grab = api.artworks(artist_id: search_id)
-      puts "artworks link, #{artwork_grab}"
-      puts "artworks title, #{artwork_grab._embedded.artworks[0].title}"
-      puts "artlink, #{artwork_grab._embedded.artworks[0]._links.thumbnail}"
+      artworks_title = artwork_grab._embedded.artworks[0].title
+      artworks_thumbnail = artwork_grab._embedded.artworks[0]._links.thumbnail
+      painting_genes = artwork_grab._embedded.artworks[0].id
+      get_genes = api.genes(artwork_id: painting_genes)
+      genes_name = get_genes._embedded.genes[0].name
       data = {
         artist_id: user_search.id,
         art_title: "#{artwork_grab._embedded.artworks[0].title}",
-        art_link: "#{artwork_grab._embedded.artworks[0]._links.thumbnail}"
+        art_link: "#{artwork_grab._embedded.artworks[0]._links.thumbnail}",
+        art_gene_name: "#{get_genes._embedded.genes[0].name}",
+        art_gene_desc: "#{get_genes._embedded.genes[0].description}"
       }
       render json: data
       # render json: "I've grabbed this bitch !! #{artwork_grab._embedded.artworks[0].title}"
-
-
   end
+
 
 end
