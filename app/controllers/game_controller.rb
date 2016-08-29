@@ -38,15 +38,19 @@ class GameController < ApplicationController
         end
       end
 
-      painting_array = ["521d22b9139b213ff0000334", "4d8b937c4eb68a1b2c001722", "53d128877261692cddbd0000", "4d8b92eb4eb68a1b2c000968"]
+      painting_array = ["521d22b9139b213ff0000334", "4d8b937c4eb68a1b2c001722", "53d128877261692cddbd0000", "4d8b92eb4eb68a1b2c000968", "51f01804275b24130c0000ae", "515d6d615eeb1c524c004a75", "5227b2a18b3b81d7ed000017", "521e6c2f275b241e63000673", "516cb54cb83d23b4db000f7e", "515b234a223afae9a5000ff4"]
       main_painting = painting_array.sample
-      puts "'random painting',#{main_painting}"
+      puts "random painting selected: ,#{main_painting}"
       api_link = api.artwork(id: main_painting)
       genes_link = api.genes(artwork_id: main_painting)
-      puts "link, #{api_link}"
+      puts "artwork link: #{api_link}"
+      artist_painting = api.artists(artwork_id: main_painting)
+      puts "artist link - #{artist_painting}"
+      puts "searching#{artist_painting._embedded.artists[0].name} "
       data = {
         painting_id: "#{api_link._links.thumbnail}",
-        gene_one: "#{genes_link._embedded.genes[0].name}"
+        gene_one: "#{genes_link._embedded.genes[0].name}",
+        painting_artist: "#{artist_painting._embedded.artists[0].name}"
       }
 
       render json: data

@@ -41,24 +41,37 @@ class ArtsyController < ApplicationController
       # andy_warhol = api.artist(id: 'andy-warhol')
       # render json: "#{andy_warhol.name} was born in #{andy_warhol.birthday} in #{andy_warhol.hometown}"
 
-      user_search = api.artist(id: data_received)
-      artist_name = user_search.name
-      artist_works = user_search.artworks
-      search_id = user_search.id
-      artwork_grab = api.artworks(artist_id: search_id)
-      artworks_title = artwork_grab._embedded.artworks[0].title
-      artworks_thumbnail = artwork_grab._embedded.artworks[0]._links.thumbnail
-      painting_genes = artwork_grab._embedded.artworks[0].id
-      get_genes = api.genes(artwork_id: painting_genes)
-      genes_name = get_genes._embedded.genes[0].name
-      data = {
-        artist_id: user_search.id,
-        art_title: "#{artwork_grab._embedded.artworks[0].title}",
-        art_link: "#{artwork_grab._embedded.artworks[0]._links.thumbnail}",
-        art_gene_name: "#{get_genes._embedded.genes[0].name}",
-        art_gene_desc: "#{get_genes._embedded.genes[0].description}"
-      }
-      render json: data
+      user_search = api.search(q: data_received)
+      puts "user search #{user_search}"
+        if user_search._embedded.results[0].type == "Artist"
+          artist_page = user_search._embedded.results[0]._links.self
+          puts "if 1 #{artist_page}"
+        else
+          full_search = user_search._embedded.results
+          if artist_page = full_search.find { |found| found['type'] == 'Artist' }
+            puts "if 2 #{artist_page._links.self}"
+          else
+            puts "not working"
+          end
+        end
+        puts "artist_page = #{artist_page}"
+
+      # artist_name = artist_page.name
+  #     search_id = user_search.id
+  #     artwork_grab = api.artworks(artist_id: search_id)
+  #     artworks_title = artwork_grab._embedded.artworks[0].title
+  #     artworks_thumbnail = artwork_grab._embedded.artworks[0]._links.thumbnail
+  #     painting_genes = artwork_grab._embedded.artworks[0].id
+  #     get_genes = api.genes(artwork_id: painting_genes)
+  #     genes_name = get_genes._embedded.genes[0].name
+  #     data = {
+  #       artist_id: user_search.id,
+  #       art_title: "#{artwork_grab._embedded.artworks[0].title}",
+  #       art_link: "#{artwork_grab._embedded.artworks[0]._links.thumbnail}",
+  #       art_gene_name: "#{get_genes._embedded.genes[0].name}",
+  #       art_gene_desc: "#{get_genes._embedded.genes[0].description}"
+  #     }
+  #     render json: data
   end
 
   def render_artsy
