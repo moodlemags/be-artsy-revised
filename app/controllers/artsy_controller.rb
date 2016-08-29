@@ -59,7 +59,24 @@ class ArtsyController < ApplicationController
         art_gene_desc: "#{get_genes._embedded.genes[0].description}"
       }
       render json: data
-      # render json: "I've grabbed this bitch !! #{artwork_grab._embedded.artworks[0].title}"
+  end
+
+  def render_artsy
+    xapp_token = 'JvTPWe4WsQO-xqX6Bts49id7qJqr5JLsQGAdvulqJSW9mftRPIKGBuNJnrA0JfQ8-dFZSrZeKVEBsJGHtE6lIT1otchC4Yw6uavJ3kY7STUddLq2MkVxx7KoIKFD3oTy2ltss5IeJT2lhszx6oM0W9YK1nm3aoC8F1Nxo4LPfiYaAhNW_k4W2GrspCa2SZfpZbmxT351ecFpgcfId8mq3iq5sfRkVMy5V8zs4nskkx4='
+
+      api = Hyperclient.new('https://api.artsy.net/api') do |api|
+        api.headers['Accept'] = 'application/vnd.artsy-v2+json'
+        api.headers['X-Xapp-Token'] = xapp_token
+        api.connection(default: false) do |conn|
+          conn.use FaradayMiddleware::FollowRedirects
+          conn.use Faraday::Response::RaiseError
+          conn.request :json
+          conn.response :json, content_type: /\bjson$/
+          conn.adapter :net_http
+        end
+      end
+
+
   end
 
 
