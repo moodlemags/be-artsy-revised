@@ -42,9 +42,11 @@ class GameController < ApplicationController
       main_painting = painting_array.sample
       puts "'random painting',#{main_painting}"
       api_link = api.artwork(id: main_painting)
+      genes_link = api.genes(artwork_id: main_painting)
       puts "link, #{api_link}"
       data = {
-        painting_id: "#{api_link._links.thumbnail}"
+        painting_id: "#{api_link._links.thumbnail}",
+        gene_one: "#{genes_link._embedded.genes[0].name}"
       }
 
       render json: data
