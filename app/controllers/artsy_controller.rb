@@ -38,40 +38,29 @@ class ArtsyController < ApplicationController
         end
       end
 
-      # andy_warhol = api.artist(id: 'andy-warhol')
-      # render json: "#{andy_warhol.name} was born in #{andy_warhol.birthday} in #{andy_warhol.hometown}"
+      endpoint = "#{data_received}+more:pagemap:metatags-og_type:artist".to_s
+      search_params = "#{endpoint}".to_s
+      artist_search = api.search(q: endpoint.to_s)
+      get_artist_id = artist_search._embedded.results[0]
+      get_artist_link = get_artist_id._links.self
+      get_artist_name = get_artist_link.name
+      get_artist_birthday = get_artist_link.birthday
+      get_artist_hometown = get_artist_link.hometown
+      get_artist_thumbnail = get_artist_link._links.thumbnail
+      get_artist_creation_date = get_artist_link.created_at
 
-      user_search = api.search(q: data_received)
-      puts "user search #{user_search}"
-        if user_search._embedded.results[0].type == "Artist"
-          artist_page = user_search._embedded.results[0]._links.self
-          puts "if 1 #{artist_page}"
-        else
-          full_search = user_search._embedded.results
-          if artist_page = full_search.find { |found| found['type'] == 'Artist' }
-            puts "if 2 #{artist_page._links.self}"
-          else
-            puts "not working"
-          end
-        end
-        puts "artist_page = #{artist_page}"
+      puts "searching for artist: #{search_params} w/ this query link #{artist_search} resulting in this referential link #{get_artist_id}"
+      puts "#{get_artist_name}"
 
-      # artist_name = artist_page.name
-  #     search_id = user_search.id
-  #     artwork_grab = api.artworks(artist_id: search_id)
-  #     artworks_title = artwork_grab._embedded.artworks[0].title
-  #     artworks_thumbnail = artwork_grab._embedded.artworks[0]._links.thumbnail
-  #     painting_genes = artwork_grab._embedded.artworks[0].id
-  #     get_genes = api.genes(artwork_id: painting_genes)
-  #     genes_name = get_genes._embedded.genes[0].name
-  #     data = {
-  #       artist_id: user_search.id,
-  #       art_title: "#{artwork_grab._embedded.artworks[0].title}",
-  #       art_link: "#{artwork_grab._embedded.artworks[0]._links.thumbnail}",
-  #       art_gene_name: "#{get_genes._embedded.genes[0].name}",
-  #       art_gene_desc: "#{get_genes._embedded.genes[0].description}"
-  #     }
-  #     render json: data
+      data = {
+          artist_creation: get_artist_creation_date,
+          artist_page: get_artist_name,
+          artist_year: get_artist_birthday,
+          artist_hometown: get_artist_hometown,
+          artist_image: get_artist_thumbnail.to_s
+      }
+      render json: data
+
   end
 
   def render_artsy
