@@ -22,8 +22,11 @@ class GameController < ApplicationController
   end
 
   def get_game_data
-    # gene_received = params[:id]
-    # puts "gene param #{gene_received}"
+    works_received = params[:saved_works]
+    items = works_received.values
+    randomized_artist = items[rand(items.length)].values
+    puts "found firebase data #{works_received} w/values of #{items} and randomed #{randomized_artist}"
+
     xapp_token = 'JvTPWe4WsQO-xqX6Bts49id7qJqr5JLsQGAdvulqJSW9mftRPIKGBuNJnrA0JfQ8-dFZSrZeKVEBsJGHtE6lIT1otchC4Yw6uavJ3kY7STUddLq2MkVxx7KoIKFD3oTy2ltss5IeJT2lhszx6oM0W9YK1nm3aoC8F1Nxo4LPfiYaAhNW_k4W2GrspCa2SZfpZbmxT351ecFpgcfId8mq3iq5sfRkVMy5V8zs4nskkx4='
 
       api = Hyperclient.new('https://api.artsy.net/api') do |api|
@@ -38,24 +41,26 @@ class GameController < ApplicationController
         end
       end
 
-      painting_array = ["521d22b9139b213ff0000334", "4d8b937c4eb68a1b2c001722", "53d128877261692cddbd0000", "4d8b92eb4eb68a1b2c000968", "51f01804275b24130c0000ae", "515d6d615eeb1c524c004a75", "5227b2a18b3b81d7ed000017", "521e6c2f275b241e63000673", "516cb54cb83d23b4db000f7e", "515b234a223afae9a5000ff4"]
-      main_painting = painting_array.sample
-      puts "random painting selected: ,#{main_painting}"
-      api_link = api.artwork(id: main_painting)
-      genes_link = api.genes(artwork_id: main_painting)
-      puts "artwork link: #{api_link}"
-      artist_painting = api.artists(artwork_id: main_painting)
-      puts "artist link - #{artist_painting}"
-      puts "searching#{artist_painting._embedded.artists[0].name} "
-      data = {
-        painting_id: "#{api_link._links.thumbnail}",
-        gene_one: "#{genes_link._embedded.genes[0].name}",
-        painting_artist: "#{artist_painting._embedded.artists[0].name}"
-      }
 
+      endpoint = "#{randomized_artist}+more:pagemap:metatags-og_type:artist".to_s
+      search_params = "#{endpoint}".to_s
+      artist_search = api.search(q: endpoint.to_s)
+      random_segway = artist_search._embedded.results[0]
+      art_link = random_segway._links.self
+      puts "endpoint #{endpoint} and params #{search_params} artwork link: #{artist_search}"
+
+      render_painting = art_link._links.thumbnail
+      artist_id = art_link.id
+      puts "#{artist_id}"
+      get_genes = api.genes(artist_id: artist_id)
+      gene_one = get_genes._embedded.genes[0].name
+      puts "#{get_genes} #{gene_one}"
+      data = {
+        painting: render_painting.to_s,
+        gene_one: gene_one
+      }
+      #
       render json: data
-      # sample_renaissance = api.gene(id: gene_received)
-      # puts "'api endpoint', #{sample_renaissance}"
 
     end
 
