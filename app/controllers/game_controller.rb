@@ -51,6 +51,12 @@ class GameController < ApplicationController
 
 
       genes_array = {"4eb45f970253b800010233f7" => "Art That Plays With Scale", "4dc7ed68b1783b0001000233" => "Humor", "5637df04726169640f00013e" => "Use of Precious Materials", "5182c6a187d161c1a300005b" => "Germany, Austria and Switzerland", "4e6a4315ec5e520001072274" => "Myth/Religion", "56d613398b0c142caf000194" => "Minimalism and Contemporary Minimalist" }
+
+      game_gene = keys(genes_array)
+      puts "#{game_gene}"
+      # randomized_gene = game_gene[rand(game_gene.length)].keys
+      # puts "#{game_gene} and randomly selected #{randomized_gene}"
+
       render_painting = art_link._links.thumbnail
       artist_id = art_link.id
       puts "#{artist_id}"
