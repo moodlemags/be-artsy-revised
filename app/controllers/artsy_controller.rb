@@ -52,12 +52,29 @@ class ArtsyController < ApplicationController
       puts "searching for artist: #{search_params} w/ this query link #{artist_search} resulting in this referential link #{get_artist_id}"
       puts "#{get_artist_name}"
 
+      artist_id = get_artist_link.id
+      get_gene_id = api.genes(artist_id: artist_id, total_count: 1)
+      learn_one_gene = get_gene_id._embedded.genes[0].name
+      desc_one_gene = get_gene_id._embedded.genes[0].description
+      id_one_gene = get_gene_id._embedded.genes[0].id
+      learn_two_gene = get_gene_id._embedded.genes[1].name
+      desc_two_gene = get_gene_id._embedded.genes[1].description
+      id_two_gene = get_gene_id._embedded.genes[1].id
+      learn_three_gene = get_gene_id._embedded.genes[2].name
+      desc_three_gene = get_gene_id._embedded.genes[2].description
+      id_three_gene = get_gene_id._embedded.genes[2].id
+
+      puts "#{get_gene_id} and #{learn_one_gene}"
+
       data = {
           artist_creation: get_artist_creation_date,
           artist_page: get_artist_name,
           artist_year: get_artist_birthday,
           artist_hometown: get_artist_hometown,
-          artist_image: get_artist_thumbnail.to_s
+          artist_image: get_artist_thumbnail.to_s,
+          gene_one: {name: learn_one_gene, desc: desc_one_gene, id: id_one_gene},
+          gene_two: [learn_two_gene, desc_two_gene, id_two_gene],
+          gene_three: [learn_three_gene, desc_three_gene, id_three_gene]
       }
       render json: data
 
