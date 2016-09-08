@@ -89,6 +89,7 @@ GEM
     nokogiri (1.6.8)
       mini_portile2 (~> 2.1.0)
       pkg-config (~> 1.1.7)
+    pg (0.18.4)
     pkg-config (1.1.7)
     pry (0.10.4)
       coderay (~> 1.1.0)
@@ -159,6 +160,7 @@ DEPENDENCIES
   httparty
   hyperclient
   listen (~> 3.0.5)
+  pg
   pry-rails
   puma (~> 3.0)
   rack-cors
@@ -167,6 +169,9 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   sqlite3
   tzinfo-data
+
+RUBY VERSION
+   ruby 2.3.1p112
 
 BUNDLED WITH
    1.12.5
